@@ -1,0 +1,364 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta content="text/html; charset=utf-8" http-equiv="Content-Type" /><title>DA awenu</title></head><body><pre>┌───*<span style="color:#008000"> Principal</span>
+│ <span style="color:#0000ff">┌─────────┐</span>
+│ <span style="color:#0000ff">│ InitGen │</span>
+│ <span style="color:#0000ff">└─────────┘</span><span style="color:#0000ff">↓ </span>nbStations
+│╔══ <span style="color:#0000ff">do while</span>(nbStations ≤ 30)
+│║ <span style="color:#0000ff">┌───────────────┐</span><span style="color:#0000ff">↓ </span>nbStations
+│║ <span style="color:#0000ff">│ TraitementGen │</span>
+│║ <span style="color:#0000ff">└───────────────┘</span>
+│╙──
+│ <span style="color:#0000ff">┌─────────┐</span>
+│ <span style="color:#0000ff">│ ClotGen │</span>
+│ <span style="color:#0000ff">└─────────┘</span>
+└──
+ 
+ 
+┌───*<span style="color:#008000"> InitGen</span>
+│ nbStations=15
+│ <span style="color:#0000ff">Ouvrir</span> sortiePremiereStation en écriture
+│ <span style="color:#0000ff">Ouvrir</span> sortieStations en écriture
+└──
+ 
+ 
+┌───*<span style="color:#008000"> ClotGen</span>
+│ <span style="color:#0000ff">Fermer</span> sortiePremiereStation
+│ <span style="color:#0000ff">Fermer</span> sortieStations 
+└──
+ 
+ 
+┌───*<span style="color:#008000"> TraitementGen</span>
+│ <span style="color:#0000ff">┌───────────┐</span><span style="color:#0000ff">↓ </span>nbStations
+│ <span style="color:#0000ff">│ InitTemps │</span>
+│ <span style="color:#0000ff">└───────────┘</span><span style="color:#0000ff">↓ </span>temps
+│╔══ <span style="color:#0000ff">do while</span>(temps < 960)
+│║ <span style="color:#0000ff">┌─────────────────┐</span>
+│║ <span style="color:#0000ff">│ TraitementTemps │</span>
+│║ <span style="color:#0000ff">└─────────────────┘</span>
+│║ temps++
+│╙──
+│ <span style="color:#0000ff">┌───────────┐</span>
+│ <span style="color:#0000ff">│ ClotTemps │</span>
+│ <span style="color:#0000ff">└───────────┘</span>
+└──
+ 
+ 
+┌───*<span style="color:#008000"> InitTemps</span>
+│ temps = 0
+│ coutTotal = 0
+│ nbServicesEnCours = 0
+│ <span style="color:#0000ff">┌────────────────┐</span><span style="color:#0000ff">↓ </span>nbStations
+│ <span style="color:#0000ff">│ InitSimulation │</span>
+│ <span style="color:#0000ff">└────────────────┘</span><span style="color:#0000ff">↓ </span>tabStations
+└──
+ 
+ 
+┌───*<span style="color:#008000"> ClotTemps</span>
+│ <span style="color:#0000ff">┌────────────┐</span><span style="color:#0000ff">↓ </span>tabStations,fileAbsolu,fileRelatif,fileOrdinaire,coutClientsServis,coutTotal
+│ <span style="color:#0000ff">│ calculCout │</span>
+│ <span style="color:#0000ff">└────────────┘</span><span style="color:#0000ff">↓ </span>coutTotal
+│ <span style="color:#0000ff">Ecrire</span> coutTotal dans sortieStations
+│ iAbs = 0
+│╔══ <span style="color:#0000ff">do while</span>(fileAbsolu(iAbs)≠ nil)
+│║ fileAbsolu(iAbs) = nil
+│║ iAbs++
+│╙──
+│ iRel = 0
+│╔══ <span style="color:#0000ff">do while</span>(fileRelatif(iRel)≠ nil)
+│║ fileRelatif(iRel) = nil
+│║ iRel++
+│╙──
+│ iOrd = 0
+│╔══ <span style="color:#0000ff">do while</span>(fileOrdinaire(iOrd) ≠nil)
+│║ fileOrdinaire(iOrd) = nil
+│║ iOrd++
+│╙──
+│ nbStations++
+└──
+ 
+ 
+┌───*<span style="color:#008000"> TraitementTemps</span>
+│ <span style="color:#0000ff">┌──────────────────┐</span>
+│ <span style="color:#0000ff">│ GénèreNbArrivées │</span>
+│ <span style="color:#0000ff">└──────────────────┘</span><span style="color:#0000ff">↓ </span>nbArrivées
+│ iArrivée=0
+│╔══ <span style="color:#0000ff">do while</span>(iArrivée < nbArrivées)
+│║ <span style="color:#0000ff">┌──────────────┐</span>
+│║ <span style="color:#0000ff">│ GénèreClient │</span>
+│║ <span style="color:#0000ff">└──────────────┘</span><span style="color:#0000ff">↓ </span>nouveauClient
+│║ <span style="color:#008000">// on regarde en premier lieu si le client peut être placé dans une station (une des stations est libre). Si oui, on l'y place.</span>
+│║┌── <span style="color:#0000ff">if</span>(nbServicesEnCours ≤ nbStations)
+│║│ <span style="color:#0000ff">┌─────────────┐</span><span style="color:#0000ff">↓ </span>client=nouveauClient,tabStations
+│║│ <span style="color:#0000ff">│ AssocClient │</span>
+│║│ <span style="color:#0000ff">└─────────────┘</span><span style="color:#0000ff">↓ </span>nbServicesEncours,tabStations
+│║│ <span style="color:#008000">//si on arrive ici, c'est que toutes les files sont occupées. le traitement à appliquer dépendra du niveau de priorité du client</span>
+│║├── <span style="color:#0000ff">else</span>
+│║│┌── <span style="color:#0000ff">if</span> (nouveauClient.priorité==<span style="color:#a31515">"absolue"</span>)
+│║││ <span style="color:#0000ff">┌────────────────────────┐</span><span style="color:#0000ff">↓ </span>tabStations,nouveauClient,fileAbsolu,fileRelatif
+│║││ <span style="color:#0000ff">│ GestionPrioritéAbsolue │</span>
+│║││ <span style="color:#0000ff">└────────────────────────┘</span><span style="color:#0000ff">↓ </span>tabStations,fileAbsolu,fileRelatif
+│║│├── <span style="color:#0000ff">if</span> (nouveauClient.priorité==<span style="color:#a31515">"relative"</span>)
+│║││ <span style="color:#0000ff">┌─────────────────────────┐</span><span style="color:#0000ff">↓ </span>nouveauClient,fileRelatif
+│║││ <span style="color:#0000ff">│ GestionPrioritéRelative │</span>
+│║││ <span style="color:#0000ff">└─────────────────────────┘</span><span style="color:#0000ff">↓ </span>fileRelatif
+│║│├── <span style="color:#0000ff">else</span>
+│║││ <span style="color:#0000ff">┌──────────────────────────┐</span><span style="color:#0000ff">↓ </span>nouveauClient,fileOrdinaire
+│║││ <span style="color:#0000ff">│ GestionPrioritéOrdinaire │</span>
+│║││ <span style="color:#0000ff">└──────────────────────────┘</span><span style="color:#0000ff">↓ </span>fileOrdinaire
+│║│└──
+│║└──
+│║ iArrivée++
+│╙──
+│ <span style="color:#008000">//On actualise la situation avant de reboucler (modélisation du fait qu'une minute passe)</span>
+│ <span style="color:#0000ff">┌────────────────────────────┐</span><span style="color:#0000ff">↓ </span>tabStations,fileAbsolu,fileRelatif,fileOrdinaire,coutTotal,nombreServicesEnCours
+│ <span style="color:#0000ff">│ ActualisationStationsFiles │</span>
+│ <span style="color:#0000ff">└────────────────────────────┘</span><span style="color:#0000ff">↓ </span>tabStations,coutTotal,fileAbsolu,fileRelatif,fileOrdinaire,nombreServiceEnCours
+└──
+ 
+ 
+┌───*<span style="color:#008000">InitSimulation</span>
+│ cptStations = 0
+│╔══ <span style="color:#0000ff">do while </span>(cptStations <  nbStations)
+│║ tabStations(cptStations).clientCourant = nil
+│║ tabStations(cptStations).coutStation = 0
+│╙──
+│ 
+└──
+ 
+ 
+┌───*<span style="color:#008000">GénèreNbArrivées</span>
+│ Générer nbAléa entre 1 et 57
+│┌── <span style="color:#0000ff">if</span> (nbAléa≤5)
+││ nbArrivées = 0
+│├── <span style="color:#0000ff">if</span>(nbAléa≤7)
+││ nbArrivées = 1
+│├── <span style="color:#0000ff">if</span>(nbAléa≤10)
+││ nbArrivées = 2
+│├── <span style="color:#0000ff">if</span>(nbAléa≤38)
+││ nbArrivées = 3
+│├── <span style="color:#0000ff">if</span>(nbAléa≤50)
+││ nbArrivées = 4
+│├── <span style="color:#0000ff">else</span>
+││ nbArrivées = 5
+│└──
+└──
+ 
+ 
+┌───*<span style="color:#008000">GénèreClient</span>
+│ <span style="color:#0000ff">┌────────────────────┐</span>
+│ <span style="color:#0000ff">│ GénèreDuréeService │</span>
+│ <span style="color:#0000ff">└────────────────────┘</span><span style="color:#0000ff">↓ </span>duréeService
+│ nouveauClient.duréeService=duréeService
+│ nouveauClient.tempsSyst=0
+│ nouveauClient.duréeStation=0
+│ <span style="color:#0000ff">┌────────────────┐</span>
+│ <span style="color:#0000ff">│ GénèrePriorité │</span>
+│ <span style="color:#0000ff">└────────────────┘</span><span style="color:#0000ff">↓ </span>nouveauClient.priorité
+└──
+ 
+ 
+┌───*<span style="color:#008000">AssocClient</span>
+│ iStation = 0
+│╔══ <span style="color:#0000ff">do while</span>(iStation < nbStations <span style="color:#0000ff">AND</span> tabStations(iStation).clientCourant ≠ NIL <span style="color:#0000ff">AND</span> client.priorité ≤ tabStations(iStation).clientCourant.priorité)
+│║ iStation++
+│╙──
+│┌── <span style="color:#0000ff">if</span>(NOT tabStations(iStation).clientCourant = NIL)
+││ max = nbStations
+││╔══ <span style="color:#0000ff">do while</span>(k > iStation)
+││║ tabStations(k)=tabStations(k-1)
+││║ k--
+││╙──
+│└──
+│ tabStations(iStation).clientCourant = client
+│ nbServicesEnCours++
+└──
+ 
+ 
+┌───*<span style="color:#008000">ActualisationStationsFiles</span>
+│ <span style="color:#0000ff">┌────────────────┐</span><span style="color:#0000ff">↓ </span>tabStations,fileAbsolu,fileRelatif,fileOrdinaire,coutTotal,nombreServicesEnCours
+│ <span style="color:#0000ff">│ uneMinutePasse │</span>
+│ <span style="color:#0000ff">└────────────────┘</span><span style="color:#0000ff">↓ </span>tabStations,coutTotal,fileAbsolu,fileRelatif,fileOrdinaire,nombreServiceEnCours
+│ <span style="color:#008000">// il s'agit de "trier" tabStations pour placer les stations qui ne sont pas en train de servir un client à la fin du tableau</span>
+│ <span style="color:#0000ff">┌────────────────┐</span><span style="color:#0000ff">↓ </span>tabStations
+│ <span style="color:#0000ff">│ triTabStations │</span>
+│ <span style="color:#0000ff">└────────────────┘</span><span style="color:#0000ff">↓ </span>tabStations
+│ <span style="color:#008000">//Si des places se sont libérées, il faut faire avancer les files</span>
+│ <span style="color:#0000ff">┌──────────────────────┐</span><span style="color:#0000ff">↓ </span>tabStations,fileAbsolu,fileRelatif,fileOrdinaire,nbServicesEnCours
+│ <span style="color:#0000ff">│ FaireAvancerLesFiles │</span>
+│ <span style="color:#0000ff">└──────────────────────┘</span><span style="color:#0000ff">↓ </span>tabStations,fileAbsolu,fileRelatif,fileOrdinaire,nbServicesEnCours
+│ 
+└──
+ 
+┌───*<span style="color:#008000">UneMinutePasse</span>
+│ <span style="color:#008000">//actualisation des stations</span>
+│ iStation = 0
+│╔══ <span style="color:#0000ff">do while</span>(iStation < nbStations)
+│║ <span style="color:#008000">//S'il y a un client dans la station, on actualise la durée qu'il a passé dans la station et son temps système. </span>
+│║┌── <span style="color:#0000ff">if</span>(tabStations(iStation≠ nil)
+│║│ tabStations(iStation).clientCourant.tempsSyst++
+│║│ tabStations(iStation).clientCourant.duréeStation++
+│║│ <span style="color:#008000">//Si à l'issue de la minute, le client est servi, il faut l'éjecter du système après avoir mémorisé le prix du temps qu'il a passé dans le système </span>
+│║│┌── <span style="color:#0000ff">if</span>((tabStations(iStation).clientCourant.duréeStation == tabStations(iStation).clientCourant.duréeService)
+│║││┌── <span style="color:#0000ff">if</span>(tabStations(iStation).clientCourant.priorité=<span style="color:#a31515">"absolue"</span>)
+│║│││ coutClient = tabStations(iStation).clientCourant.tempsSyst * (37.50/60)
+│║││├── <span style="color:#0000ff">if</span>(tabStations(iStation).clientCourant.priorité=<span style="color:#a31515">"relative"</span>)
+│║│││ coutClient = tabStations(iStation).clientCourant.tempsSyst * (25.50/60)
+│║││├── <span style="color:#0000ff">else</span>
+│║│││ coutClient = tabStations(iStation).clientCourant.tempsSyst * (22.50/60)
+│║││└──
+│║││ coutTotal+= coutClient
+│║││ tabStations(iStation).clientCourant = nil
+│║││ nbServicesEnCours--
+│║│└──
+│║│ <span style="color:#008000">//on augmente le cout du prix d'une minute d'occupation d'une station</span>
+│║│ tabStations(iStation).coutStation+=30/60
+│║│ <span style="color:#008000">//S'il n'y a personne dans la station</span>
+│║├── <span style="color:#0000ff">else</span>
+│║│ <span style="color:#008000">//on augmente le cout du prix d'une minute d'inoccupation d'une station</span>
+│║│ tabStations(iStation).coutStation+=18/60
+│║└──
+│║ iStation ++
+│╙──
+│ <span style="color:#008000">//actualisation des files: il faut augmenter le temps système de chaque client se trouvant dans une file de 1</span>
+│ iAbs = 0
+│╔══ <span style="color:#0000ff">do while</span>(fileAbsolu(iAbs)≠ nil)
+│║ fileAbsolu(iAbs).tempsSyst++
+│║ iAbs++
+│╙──
+│ iRel = 0
+│╔══ <span style="color:#0000ff">do while</span>(fileRelatif(iRel)≠ nil)
+│║ fileRelatif(iAbs).tempsSyst++
+│║ iRel++
+│╙──
+│ iOrd = 0
+│╔══ <span style="color:#0000ff">do while</span>(fileOrdinaire(iOrd) ≠ nil)
+│║ fileOrdinaire(iOrd).tempsSyst++
+│║ iOrd++
+│╙──
+│ 
+│ 
+│ 
+└──
+ 
+┌───*<span style="color:#008000">GestionPrioritéAbsolue</span>
+│ <span style="color:#008000">//Il s'agit d'un prioritaire absolu, donc on regarde en premier lieu si des clients ordinaires peuvent être éjectés de leur station</span>
+│ <span style="color:#008000">//En effet, si on arrive dans ce module, cela veut dire que toutes les stations sont occupées.</span>
+│ iStation = nbStations-1
+│╔══ <span style="color:#0000ff">do while</span>(tabStations(iStation) = NIL)
+│║ iStation--
+│╙──
+│ peutRemplacer = false
+│ duréeServiceMax = -1
+│╔══ <span style="color:#0000ff">do while</span>(iStation≥0 <span style="color:#0000ff">AND</span> tabStations(iStation).clientCourant.priorité=<span style="color:#a31515">"ordinaire"</span>)
+│║ <span style="color:#008000">//Si on est entré dans la boucle, cela veut dire qu'il y a au moins un client ordinaire, on pourra donc placer le prioritaire </span>
+│║ peutRemplacer = true
+│║ <span style="color:#008000">//Ensuite, on parcoure l'ensemble des clients ordinaires pour déterminer lequel il convient le plus d'éjecter.</span>
+│║ 
+│║┌── <span style="color:#0000ff">if</span>(tabStations(iStation).clientCourant.duréeService-tabStations(iStation).clientCourant.duréeStation ≥ duréeServiceMax)
+│║│ duréeServiceMax = tabStations(iStation).clientCourant.duréeService-tabStations(iStation).clientCourant.duréeStation
+│║│ iClientARemplacer = iStation
+│║└──
+│║ iStation--
+│║ 
+│╙──
+│ <span style="color:#008000">//Si on a trouvé un client A remplacer, il faut l'éjecter de la station et placer le prioritaire absolu à sa place</span>
+│┌── <span style="color:#0000ff">if</span>(peutRemplacer)
+││ <span style="color:#0000ff">┌────────────────────────────────┐</span><span style="color:#0000ff">↓ </span>fileRelatif,tabStations,iClientARemplacer,nouveauClient
+││ <span style="color:#0000ff">│ EjectionClientPourRemplacement │</span>
+││ <span style="color:#0000ff">└────────────────────────────────┘</span><span style="color:#0000ff">↓ </span>tabStations,fileRelatif
+│├── <span style="color:#0000ff">else</span>
+││ <span style="color:#008000">//Sinon, on est dans le cas où tabStations est rempli de prioritaires. On arrive alors dans la situation où il faut placer</span>
+││ <span style="color:#008000">//le client en attente, de préférence dans la file des prioritaires absolus s'il y a de la place, dans la file des relatifs sinon</span>
+││ <span style="color:#0000ff">┌──────────────────────────────────┐</span><span style="color:#0000ff">↓ </span>fileAbsolu,fileRelatif,nouveauClient
+││ <span style="color:#0000ff">│ MiseEnAttenteDePrioritaireAbsolu │</span>
+││ <span style="color:#0000ff">└──────────────────────────────────┘</span><span style="color:#0000ff">↓ </span>fileAbsolu,fileRelatif
+│└──
+└──
+ 
+┌───*<span style="color:#008000">GestionPrioritéRelative</span>
+│ <span style="color:#008000">// Il s'agit d'un prioritaire relatif, il ne pourra donc éjecter personne. On le place simplement dans la file des relatifs</span>
+│ <span style="color:#008000">// en fonction de sa durée de service.</span>
+│ iRel = 0
+│╔══ <span style="color:#0000ff">do while</span>(nouveauClient.duréeService ≥ fileRelatif(iRel).duréeService)
+│║ iRel++
+│╙──
+│ <span style="color:#0000ff">┌─────────────────────┐</span><span style="color:#0000ff">↓ </span>fileADécaler=fileRelatif
+│ <span style="color:#0000ff">│ DecalageAdroiteFile │</span>
+│ <span style="color:#0000ff">└─────────────────────┘</span><span style="color:#0000ff">↓ </span>fileRelatif
+│ fileRelatif(iRel) = nouveauClient
+└──
+ 
+┌───*<span style="color:#008000">GestionPrioritéOrdinaire</span>
+│ iOrd = 0
+│╔══ <span style="color:#0000ff">do while</span>(iOrd.duréeService ≥ fileOrdinaire(iOrd).duréeService)
+│║ iOrd++
+│╙──
+│ <span style="color:#0000ff">┌─────────────────────┐</span><span style="color:#0000ff">↓ </span>fileADécaler=fileOrdinaire
+│ <span style="color:#0000ff">│ DecalageAdroiteFile │</span>
+│ <span style="color:#0000ff">└─────────────────────┘</span><span style="color:#0000ff">↓ </span>fileOrdinaire
+│ fileOrdinaire(iOrd) = nouveauClient
+└──
+ 
+┌───*<span style="color:#008000">EjectionClientPourRemplacement</span>
+│ tabStations(iClientARemplacer).clientCourant.priorité = <span style="color:#a31515">"relative"</span>
+│ <span style="color:#0000ff">┌─────────────────────────┐</span><span style="color:#0000ff">↓ </span>nouveauClient=tabStations(iClientARemplacer).clientCourant,fileRelatif
+│ <span style="color:#0000ff">│ GestionPrioritéRelative │</span>
+│ <span style="color:#0000ff">└─────────────────────────┘</span><span style="color:#0000ff">↓ </span>fileRelatif
+│ tabStations(iClientARemplacer).clientCourant = nouveauClient
+└──
+ 
+┌───*<span style="color:#008000">MiseEnAttentePrioritaireAbsolu</span>
+│ iAbs = 0
+│╔══ <span style="color:#0000ff">do while</span>(fileAbsolu(iAbs) ≠ nil <span style="color:#0000ff">AND</span> iAbs<5)
+│║ i++
+│╙──
+│┌── <span style="color:#0000ff">if</span>(iAbs=5)
+││ nouveauClient.priorité = relative
+││ <span style="color:#0000ff">┌─────────────────────────┐</span><span style="color:#0000ff">↓ </span>nouveauClient,fileRelatif
+││ <span style="color:#0000ff">│ GestionPrioritéRelative │</span>
+││ <span style="color:#0000ff">└─────────────────────────┘</span><span style="color:#0000ff">↓ </span>fileRelatif
+│└──
+│ 
+└──
+ 
+┌───*<span style="color:#008000">DecalageADroiteFile</span>
+│ compteFile = 0
+│╔══ <span style="color:#0000ff">do while</span>(fileADécaler(compteFile)≠ nil)
+│║ compteFile++
+│╙──
+│ k = compteFile
+│╔══ <span style="color:#0000ff">do while</span>(k > iFile)
+│║ fileADécaler(k) = fileADécaler(k-1)
+│║ k--
+│╙──
+└──
+ 
+ 
+┌───*<span style="color:#008000">FaireAvancerLesFiles</span>
+│ <span style="color:#0000ff">┌───────────────────┐</span><span style="color:#0000ff">↓ </span>fileAbsolu,tabStations,nombreServicesEnCours
+│ <span style="color:#0000ff">│ DéfilerFileAbsolu │</span>
+│ <span style="color:#0000ff">└───────────────────┘</span><span style="color:#0000ff">↓ </span>fileAbsolu,tabStations,nombreServicesEnCours
+│┌── <span style="color:#0000ff">if</span>(nombreServicesEnCours < nbStations)
+││ <span style="color:#0000ff">┌────────────────────┐</span><span style="color:#0000ff">↓ </span>fileRelatif,tabStations,nombreServicesEnCours
+││ <span style="color:#0000ff">│ DéfilerFileRelatif │</span>
+││ <span style="color:#0000ff">└────────────────────┘</span><span style="color:#0000ff">↓ </span>fileRelatif,tabStations,nombreServicesEnCours
+││┌── <span style="color:#0000ff">if</span>(nombreServicesEnCours < nbStations)
+│││ <span style="color:#0000ff">┌──────────────────────┐</span><span style="color:#0000ff">↓ </span>fileOrdinaire,tabStations,nombreServicesEnCours
+│││ <span style="color:#0000ff">│ DéfilerFileOrdinaire │</span>
+│││ <span style="color:#0000ff">└──────────────────────┘</span><span style="color:#0000ff">↓ </span>fileOrdinaire,tabStations,nombreServicesEnCours
+││└──
+│└──
+└──
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+</pre></body></html>
