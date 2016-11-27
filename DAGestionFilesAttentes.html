@@ -77,6 +77,11 @@
  
  
 ┌───*<span style="color:#008000"> TraitementTemps</span>
+│┌── <span style="color:#0000ff">if</span>(temps < 20 && nbStations = 15)
+││ <span style="color:#0000ff">┌───────────────────────┐</span>
+││ <span style="color:#0000ff">│ sortiesPremierFichier │</span>
+││ <span style="color:#0000ff">└───────────────────────┘</span>
+│└──
 │ <span style="color:#0000ff">┌──────────────────┐</span>
 │ <span style="color:#0000ff">│ GénèreNbArrivées │</span>
 │ <span style="color:#0000ff">└──────────────────┘</span><span style="color:#0000ff">↓ </span>nbArrivées
@@ -112,6 +117,11 @@
 │ <span style="color:#0000ff">┌────────────────────────────┐</span><span style="color:#0000ff">↓ </span>tabStations,fileAbsolu,fileRelatif,fileOrdinaire,coutTotal,nombreServicesEnCours
 │ <span style="color:#0000ff">│ ActualisationStationsFiles │</span>
 │ <span style="color:#0000ff">└────────────────────────────┘</span><span style="color:#0000ff">↓ </span>tabStations,coutTotal,fileAbsolu,fileRelatif,fileOrdinaire,nombreServiceEnCours
+│┌── <span style="color:#0000ff">if</span>(temps < 20 && nbStations = 15)
+││ <span style="color:#0000ff">┌───────────────────────┐</span>
+││ <span style="color:#0000ff">│ sortiesPremierFichier │</span>
+││ <span style="color:#0000ff">└───────────────────────┘</span>
+│└──
 └──
  
  
@@ -149,7 +159,6 @@
 │ <span style="color:#0000ff">└────────────────────┘</span><span style="color:#0000ff">↓ </span>duréeService
 │ nouveauClient.duréeService=duréeService
 │ nouveauClient.tempsSyst=0
-│ nouveauClient.duréeStation=0
 │ <span style="color:#0000ff">┌────────────────┐</span>
 │ <span style="color:#0000ff">│ GénèrePriorité │</span>
 │ <span style="color:#0000ff">└────────────────┘</span><span style="color:#0000ff">↓ </span>nouveauClient.priorité
@@ -162,7 +171,7 @@
 │║ iStation++
 │╙──
 │┌── <span style="color:#0000ff">if</span>(NOT tabStations(iStation).clientCourant = NIL)
-││ max = nbStations
+││ k = nbStations
 ││╔══ <span style="color:#0000ff">do while</span>(k > iStation)
 ││║ tabStations(k)=tabStations(k-1)
 ││║ k--
@@ -195,9 +204,9 @@
 │║ <span style="color:#008000">//S'il y a un client dans la station, on actualise la durée qu'il a passé dans la station et son temps système. </span>
 │║┌── <span style="color:#0000ff">if</span>(tabStations(iStation≠ nil)
 │║│ tabStations(iStation).clientCourant.tempsSyst++
-│║│ tabStations(iStation).clientCourant.duréeStation++
+│║│ tabStations(iStation).clientCourant.duréeService--
 │║│ <span style="color:#008000">//Si à l'issue de la minute, le client est servi, il faut l'éjecter du système après avoir mémorisé le prix du temps qu'il a passé dans le système </span>
-│║│┌── <span style="color:#0000ff">if</span>((tabStations(iStation).clientCourant.duréeStation == tabStations(iStation).clientCourant.duréeService)
+│║│┌── <span style="color:#0000ff">if</span>((tabStations(iStation).clientCourant.duréeService == 0)
 │║││┌── <span style="color:#0000ff">if</span>(tabStations(iStation).clientCourant.priorité=<span style="color:#a31515">"absolue"</span>)
 │║│││ coutClient = tabStations(iStation).clientCourant.tempsSyst * (37.50/60)
 │║││├── <span style="color:#0000ff">if</span>(tabStations(iStation).clientCourant.priorité=<span style="color:#a31515">"relative"</span>)
@@ -243,7 +252,7 @@
 │ <span style="color:#008000">//Il s'agit d'un prioritaire absolu, donc on regarde en premier lieu si des clients ordinaires peuvent être éjectés de leur station</span>
 │ <span style="color:#008000">//En effet, si on arrive dans ce module, cela veut dire que toutes les stations sont occupées.</span>
 │ iStation = nbStations-1
-│╔══ <span style="color:#0000ff">do while</span>(tabStations(iStation) = NIL)
+│╔══ <span style="color:#0000ff">do while</span>(tabStations(iStation).clientCourant = NIL)
 │║ iStation--
 │╙──
 │ peutRemplacer = false
@@ -253,8 +262,8 @@
 │║ peutRemplacer = true
 │║ <span style="color:#008000">//Ensuite, on parcoure l'ensemble des clients ordinaires pour déterminer lequel il convient le plus d'éjecter.</span>
 │║ 
-│║┌── <span style="color:#0000ff">if</span>(tabStations(iStation).clientCourant.duréeService-tabStations(iStation).clientCourant.duréeStation ≥ duréeServiceMax)
-│║│ duréeServiceMax = tabStations(iStation).clientCourant.duréeService-tabStations(iStation).clientCourant.duréeStation
+│║┌── <span style="color:#0000ff">if</span>(tabStations(iStation).clientCourant.duréeService ≥ duréeServiceMax)
+│║│ duréeServiceMax = tabStations(iStation).clientCourant.duréeService
 │║│ iClientARemplacer = iStation
 │║└──
 │║ iStation--
@@ -289,7 +298,7 @@
  
 ┌───*<span style="color:#008000">GestionPrioritéOrdinaire</span>
 │ iOrd = 0
-│╔══ <span style="color:#0000ff">do while</span>(iOrd.duréeService ≥ fileOrdinaire(iOrd).duréeService)
+│╔══ <span style="color:#0000ff">do while</span>(nouveauClient.duréeService ≥ fileOrdinaire(iOrd).duréeService)
 │║ iOrd++
 │╙──
 │ <span style="color:#0000ff">┌─────────────────────┐</span><span style="color:#0000ff">↓ </span>fileADécaler=fileOrdinaire

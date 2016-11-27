@@ -32,33 +32,38 @@ public class RandomGenerator
 	}
 	public int generateRandomServiceDuration()
 	{
-		int randomNumber = randomGeneration();
+		double randomNumber = getRandomNumberZeroToOne();
 		int serviceDuration;
-		if(randomNumber<2)
+		double limite1 = (double)2/57;
+		double limite2 = (double)5/57;
+		double limite3 = (double)7/57;
+		double limite4 = (double)18/57;
+		double limite5 = (double)35/57;
+		if(randomNumber<limite1)
 		{
 			serviceDuration = 1;
 		}
 		else
 		{
-			if(randomNumber<5)
+			if(randomNumber<limite2)
 			{
 				serviceDuration = 2;
 			}
 			else
 			{
-				if(randomNumber<7)
+				if(randomNumber<limite3)
 				{
 					serviceDuration = 3;
 				}
 				else
 				{
-					if(randomNumber<18)
+					if(randomNumber<limite4)
 					{
 						serviceDuration = 4;
 					}
 					else
 					{
-						if(randomNumber<35)
+						if(randomNumber<limite5)
 						{
 							serviceDuration = 5;
 						}
@@ -75,33 +80,38 @@ public class RandomGenerator
 	}
 	public int generateRandomArrivalsNumber()
 	{
-		int randomNumber = randomGeneration();
+		double randomNumber = getRandomNumberZeroToOne();
+		double limite1 = (double)5/57;
+		double limite2 = (double)7/57;
+		double limite3 = (double)10/57;
+		double limite4 = (double)38/57;
+		double limite5 = (double)50/57;
 		int arrivalsNumber;
-		if(randomNumber<5)
+		if(randomNumber<limite1)
 		{
 			arrivalsNumber = 0;
 		}
 		else
 		{
-			if(randomNumber<7)
+			if(randomNumber<limite2)
 			{
 				arrivalsNumber = 1;
 			}
 			else
 			{
-				if(randomNumber<10)
+				if(randomNumber<limite3)
 				{
 					arrivalsNumber = 2;
 				}
 				else
 				{
-					if(randomNumber<38)
+					if(randomNumber<limite4)
 					{
 						arrivalsNumber = 3;
 					}
 					else
 					{
-						if(randomNumber<50)
+						if(randomNumber<limite5)
 						{
 							arrivalsNumber = 4;
 						}
@@ -115,5 +125,25 @@ public class RandomGenerator
 		}
 		
 		return arrivalsNumber;
+	}
+	Priority generateRandomPriorityType()
+	{
+		double randomNumber = getRandomNumberZeroToOne();
+		if(randomNumber < 0.3)
+		{
+			return Priority.ABSOLUTE;
+		}
+		else
+		{
+			if(randomNumber < 0.4)
+			{
+				return Priority.RELATIVE;
+			}
+			else
+			{
+				return Priority.STANDARD;
+			}
+		}
+		
 	}
 }
